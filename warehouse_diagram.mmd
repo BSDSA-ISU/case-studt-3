@@ -1,61 +1,27 @@
-erDiagram
-    Dim_Student ||--o{ Fact_Student_Subject_Performance : "student_key"
-    Dim_Subject ||--o{ Fact_Student_Subject_Performance : "subject_key"
-    Dim_Date ||--o{ Fact_Student_Subject_Performance : "date_key"
-    Dim_Risk_Category ||--o{ Fact_Student_Subject_Performance : "risk_key"
+flowchart LR
+    subgraph Left_Dims [" "]
+        direction TB
+        Dim_Student["<b>Dim_Student</b><br/>──────────────<br/>PK student_key (INT)<br/>UK student_id (VARCHAR)<br/>gender, age<br/>grade_level, section<br/>enrollment_status"]
+        Dim_Subject["<b>Dim_Subject</b><br/>──────────────<br/>PK subject_key (INT)<br/>UK subject_name (VARCHAR)<br/>department (VARCHAR)"]
+    end
 
-    Dim_Student {
-        INT student_key PK
-        VARCHAR student_id UK
-        VARCHAR gender
-        INT age
-        VARCHAR grade_level
-        VARCHAR section
-        VARCHAR enrollment_status
-        TIMESTAMP created_at
-    }
+    Fact["<b>Fact_Student_Subject_Performance</b><br/>──────────────────────────────<br/>PK fact_id (INT AUTO_INC)<br/>FK student_key → Dim_Student<br/>FK subject_key → Dim_Subject<br/>FK date_key → Dim_Date<br/>FK risk_key → Dim_Risk_Category<br/>──────────────────────────────<br/>exam_score, below80_flag<br/>att_total / present / absent / late<br/>attendance_rate, absence_rate<br/>hw_total_count, hw_mean_completion<br/>hw_missing_rate, hw_late_rate<br/>parent_comm_count"]
 
-    Dim_Subject {
-        INT subject_key PK
-        VARCHAR subject_name UK
-        VARCHAR department
-    }
+    subgraph Right_Dims [" "]
+        direction TB
+        Dim_Date["<b>Dim_Date</b><br/>──────────────<br/>PK date_key (YYYYMMDD)<br/>UK full_date (DATE)<br/>year_num, quarter_num<br/>month_num, month_name<br/>day_of_week"]
+        Dim_Risk["<b>Dim_Risk_Category</b><br/>──────────────<br/>PK risk_key (INT)<br/>UK risk_code (0 / 1)<br/>risk_label (VARCHAR)<br/>threshold_rule (VARCHAR)"]
+    end
 
-    Dim_Date {
-        INT date_key PK
-        DATE full_date UK
-        INT year_num
-        INT quarter_num
-        INT month_num
-        VARCHAR month_name
-        VARCHAR day_of_week
-    }
+    Dim_Student -- "1 : N" --> Fact
+    Dim_Subject -- "1 : N" --> Fact
+    Fact <-- "N : 1" --- Dim_Date
+    Fact <-- "N : 1" --- Dim_Risk
 
-    Dim_Risk_Category {
-        INT risk_key PK
-        TINYINT risk_code UK
-        VARCHAR risk_label
-        VARCHAR threshold_rule
-    }
-
-    Fact_Student_Subject_Performance {
-        INT fact_id PK
-        INT student_key FK
-        INT subject_key FK
-        INT date_key FK
-        INT risk_key FK
-        DECIMAL exam_score
-        TINYINT below80_flag
-        INT att_total_sessions
-        INT att_present_count
-        INT att_absent_count
-        INT att_late_count
-        DECIMAL attendance_rate
-        DECIMAL absence_rate
-        INT hw_total_count
-        DECIMAL hw_mean_completion
-        DECIMAL hw_missing_rate
-        DECIMAL hw_late_rate
-        INT parent_comm_count
-        TIMESTAMP last_updated
-    }
+    style Fact fill:#1B365D,stroke:#0F172A,stroke-width:2px,color:#FFFFFF
+    style Dim_Student fill:#F8FAFC,stroke:#1B365D,stroke-width:1.5px,color:#0F172A
+    style Dim_Subject fill:#F8FAFC,stroke:#1B365D,stroke-width:1.5px,color:#0F172A
+    style Dim_Date fill:#F8FAFC,stroke:#1B365D,stroke-width:1.5px,color:#0F172A
+    style Dim_Risk fill:#F8FAFC,stroke:#1B365D,stroke-width:1.5px,color:#0F172A
+    style Left_Dims fill:transparent,stroke:none
+    style Right_Dims fill:transparent,stroke:none
