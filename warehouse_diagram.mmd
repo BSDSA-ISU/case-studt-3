@@ -1,0 +1,61 @@
+erDiagram
+    Dim_Student ||--o{ Fact_Student_Subject_Performance : "student_key"
+    Dim_Subject ||--o{ Fact_Student_Subject_Performance : "subject_key"
+    Dim_Date ||--o{ Fact_Student_Subject_Performance : "date_key"
+    Dim_Risk_Category ||--o{ Fact_Student_Subject_Performance : "risk_key"
+
+    Dim_Student {
+        INT student_key PK
+        VARCHAR student_id UK
+        VARCHAR gender
+        INT age
+        VARCHAR grade_level
+        VARCHAR section
+        VARCHAR enrollment_status
+        TIMESTAMP created_at
+    }
+
+    Dim_Subject {
+        INT subject_key PK
+        VARCHAR subject_name UK
+        VARCHAR department
+    }
+
+    Dim_Date {
+        INT date_key PK
+        DATE full_date UK
+        INT year_num
+        INT quarter_num
+        INT month_num
+        VARCHAR month_name
+        VARCHAR day_of_week
+    }
+
+    Dim_Risk_Category {
+        INT risk_key PK
+        TINYINT risk_code UK
+        VARCHAR risk_label
+        VARCHAR threshold_rule
+    }
+
+    Fact_Student_Subject_Performance {
+        INT fact_id PK
+        INT student_key FK
+        INT subject_key FK
+        INT date_key FK
+        INT risk_key FK
+        DECIMAL exam_score
+        TINYINT below80_flag
+        INT att_total_sessions
+        INT att_present_count
+        INT att_absent_count
+        INT att_late_count
+        DECIMAL attendance_rate
+        DECIMAL absence_rate
+        INT hw_total_count
+        DECIMAL hw_mean_completion
+        DECIMAL hw_missing_rate
+        DECIMAL hw_late_rate
+        INT parent_comm_count
+        TIMESTAMP last_updated
+    }
